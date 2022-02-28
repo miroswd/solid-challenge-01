@@ -1,0 +1,283 @@
+{
+  "openapi":"3.0.0",
+  "info": {
+    "title":"Atlas",
+    "description":"API Atlas documentation",
+    "version":"1.0.0"
+  },
+  "paths":{
+    "/users":{
+      "post": {
+        "tags":["Users"],
+        "summary": "Create a User",
+        "description":"Create user",
+        "requestBody": {         
+          "description":"Created user",
+          "required":true,
+          "content": {
+            "application/json":{
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type":"string",
+                    "example":"john"
+                  },
+                  "email": {
+                    "type":"string",
+                    "example":"doe"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created user with success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type":"string",
+                      "example":"3d681021-02ff-4f4f-9f07-f13ac535553b"
+                    },
+                    "admin": {
+                      "type":"boolean",
+                      "default": false,
+                      "example": false
+                    },
+                    "created_at": {
+                      "type":"string",
+                      "example":"2022-02-28T18:34:51.652Z"
+                    },
+                    "updated_at": {
+                      "type":"string",
+                      "example":"2022-02-28T18:34:51.652Z"
+                    },
+                    "name": {
+                      "type":"string",
+                      "example":"John Doe"
+                    },
+                    "email": {
+                      "type":"string",
+                      "example": "john@doe.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "E-mail already in use",
+            "content":{
+              "application/json": {
+                "schema": {
+                  "type":"object",
+                  "example":{
+                    "error": "E-mail is already in use"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags":["Users"],
+        "summary": "List all users",
+        "description":"Only admin user can list all users",
+        "parameters": [
+          {
+            "name":"user_id",
+            "in": "header",
+            "schema": {
+              "type":"string",
+              "example":"3d681021-02ff-4f4f-9f07-f13ac535553b"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Not permited list users",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type":"object",
+                      "example": {
+                        "error": "User is not admin"
+                      }
+                    },
+                    {
+                      "type":"object",
+                      "description": "When user is not found",
+                      "example": {
+                        "error": "User does not exists"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },  
+    "/users/{user_id}":{
+      "get": {
+        "tags":["Users"],
+        "summary": "Create a User",
+        "description":"Return user by id",
+        "parameters": [
+          {
+            "in":"path",
+            "name":"user_id",
+            "schema":{
+              "type":"string",
+              "example":"3d681021-02ff-4f4f-9f07-f13ac535553b"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200":  {
+            "description": "Success",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type":"object",
+                    "properties": 
+                    {
+                      "id":{
+                        "type": "string",
+                        "example": "6fa65c3d-1b8a-4402-9454-6c8375393d6e"
+                      },
+                      "admin":{
+                        "type": "string",
+                        "example":  true
+                      },
+                      "created_at":{
+                        "type": "string",
+                        "example": "2022-02-28T19:25:02.615Z"
+                      },
+                      "updated_at":{
+                        "type": "string",
+                        "example": "2022-02-28T19:25:26.269Z"
+                      },
+                      "name":{
+                        "type": "string",
+                        "example": "miro"
+                      },
+                      "email":{
+                        "type": "string",
+                        "example": "miro@email.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user does not exists",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type":"object",
+                      "example": {
+                        "error": "The user does not exists"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/admin": {
+      "patch": {
+        "tags":["Users"],
+        "summary": "Turn user to admin",
+        "description":"Update user with permissions of admin",
+        "parameters": [
+          {
+            "in":"path",
+            "name":"user_id",
+            "schema":{
+              "type":"string",
+              "example":"3d681021-02ff-4f4f-9f07-f13ac535553b"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "type": "object",
+                  "properties": 
+                  {
+                    "id":{
+                      "type": "string",
+                      "example": "6fa65c3d-1b8a-4402-9454-6c8375393d6e"
+                    },
+                    "admin":{
+                      "type": "string",
+                      "example":  true
+                    },
+                    "created_at":{
+                      "type": "string",
+                      "example": "2022-02-28T19:25:02.615Z"
+                    },
+                    "updated_at":{
+                      "type": "string",
+                      "example": "2022-02-28T19:25:26.269Z"
+                    },
+                    "name":{
+                      "type": "string",
+                      "example": "miro"
+                    },
+                    "email":{
+                      "type": "string",
+                      "example": "miro@email.com"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user does not exists",
+            "content": {
+              "application/json":{
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type":"object",
+                      "example": {
+                        "error": "The user does not exists"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
